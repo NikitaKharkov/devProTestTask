@@ -1,0 +1,33 @@
+old_sound_rabbit_mq:
+    connections:
+        default:
+            host:     '%rabbit_host%'
+            port:     '%rabbit_port%'
+            user:     '%rabbit_user%'
+            password: '%rabbit_pass%'
+            vhost:    '/'
+            lazy:     false
+    producers:
+        request_words:
+            connection: default
+            exchange_options: { name: 'dev-pro', type: fanout }
+            queue_options:
+                name: 'request.words'
+        parse_html_synonyms:
+            connection: default
+            exchange_options: { name: 'dev-pro', type: fanout }
+            queue_options:
+                name: 'parse.html.synonyms'
+    consumers:
+        request_words:
+            connection: default
+            exchange_options: { name: 'dev-pro', type: fanout }
+            queue_options:
+                name: 'request.words'
+            callback: app.consumer.request
+        parse_html_synonyms:
+            connection: default
+            exchange_options: { name: 'dev-pro', type: fanout }
+            queue_options:
+                name: 'parse.html.synonyms'
+            callback: app.consumer.parse

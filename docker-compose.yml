@@ -1,0 +1,43 @@
+version: "3.3"
+
+services:
+  php:
+    container_name: dp_php
+    build: docker/php
+    restart: always
+    networks:
+      - ibe
+    volumes:
+      - .:/var/www/devProTestTask
+
+  nginx:
+    container_name: dp_nginx
+    build: docker/nginx
+    restart: always
+    networks:
+      - ibe
+    ports:
+      - 80:80
+
+  mongo:
+    container_name: dp_mongo
+    image: mongo:3.5
+    restart: always
+    networks:
+      - ibe
+    ports:
+      - 27017:27017
+
+  rabbit:
+    image: rabbitmq:3-management
+    container_name: dp_rabbit
+    networks:
+      - ibe
+    ports:
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+
+networks:
+  ibe:

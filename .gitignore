@@ -1,0 +1,6 @@
+!.gitkeep
+app/config/parameters.yml
+var/cache/
+var/logs/
+var/supervisor
+vendor/

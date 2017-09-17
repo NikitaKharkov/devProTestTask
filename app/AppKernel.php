@@ -15,6 +15,11 @@ class AppKernel extends Kernel
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+
+            new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle(),
+            new OldSound\RabbitMqBundle\OldSoundRabbitMqBundle(),
+            new Phobetor\RabbitMqSupervisorBundle\RabbitMqSupervisorBundle(),
+
             new AppBundle\AppBundle(),
         ];
 
@@ -45,6 +50,12 @@ class AppKernel extends Kernel
     public function getLogDir()
     {
         return dirname(__DIR__).'/var/logs';
+    }
+
+    public static function getWebDir()
+    {
+        return dirname(__DIR__).'../web';
+
     }
 
     public function registerContainerConfiguration(LoaderInterface $loader)
