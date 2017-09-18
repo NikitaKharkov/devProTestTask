@@ -1,5 +1,5 @@
-services:
-  app.consumer.request:
-    class: AppBundle\Service\RequestConsumer
-    arguments:
-      - "%url%"
+#services:
+#  app.consumer.request:
+#    class: AppBundle\Service\RequestConsumer
+#    arguments:
+#      - "%url%"

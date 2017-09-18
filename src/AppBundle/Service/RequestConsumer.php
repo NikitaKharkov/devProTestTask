@@ -15,11 +15,6 @@ class RequestConsumer implements ConsumerInterface
     public $client;
 
     /**
-     * @var Filesystem $filesystem
-     */
-    public $filesystem;
-
-    /**
      * @var string $url
      */
     public $url;
@@ -31,7 +26,6 @@ class RequestConsumer implements ConsumerInterface
     public function __construct(string $url)
     {
         $this->client = new Client();
-        $this->filesystem = new Filesystem();
         $this->url = $url;
     }
 

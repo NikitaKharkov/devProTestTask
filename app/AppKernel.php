@@ -54,7 +54,7 @@ class AppKernel extends Kernel
 
     public static function getWebDir()
     {
-        return dirname(__DIR__).'../web';
+        return dirname(__DIR__).'/web';
 
     }
 
