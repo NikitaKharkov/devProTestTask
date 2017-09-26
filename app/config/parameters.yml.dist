@@ -12,3 +12,5 @@ parameters:
     rabbit_port: 5672
     rabbit_user: admin
     rabbit_pass: admin
+
+    url_for_parse: http://www.wordreference.com/synonyms/

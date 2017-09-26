@@ -7,5 +7,9 @@ parameters:
     mongo_database: devPro
     mongo_auth_database: null
     secret: 74b00d1da7aca66418dcd04c8df9dac1544edb05
+    rabbit_host: rabbit
+    rabbit_port: 5672
+    rabbit_user: devPro
+    rabbit_pass: devProPswrd
 
-    synonyms_url:
+    url_for_parse: http://www.wordreference.com/synonyms/

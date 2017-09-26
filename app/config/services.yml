@@ -1,5 +1,15 @@
-#services:
-#  app.consumer.request:
-#    class: AppBundle\Service\RequestConsumer
-#    arguments:
-#      - "%url%"
+services:
+  app.file.saving:
+    class: AppBundle\Service\FileSavingService
+
+  app.consumer.request:
+    class: AppBundle\Service\RequestConsumer
+    arguments:
+      - '%url_for_parse%'
+      - '@app.file.saving'
+      - '@old_sound_rabbit_mq.parse_html_synonyms_producer'
+      - '@monolog.logger'
+
+  app.consumer.parse:
+    class: AppBundle\Service\ParseConsumer
+    autowire: true

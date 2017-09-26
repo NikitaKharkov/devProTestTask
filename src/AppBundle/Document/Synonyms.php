@@ -20,7 +20,7 @@ class Synonyms
     /**
      * Implied format:
      * [
-     *    "word" => "html string with synonyms"
+     *    "word" => "html with synonyms"
      * ]
      *
      * @var array $synonyms
@@ -34,17 +34,6 @@ class Synonyms
     public function getId(): string
     {
         return $this->id;
-    }
-
-    /**
-     * @param string $id
-     * @return Synonyms
-     */
-    public function setId(string $id): Synonyms
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**

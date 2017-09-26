@@ -13,12 +13,12 @@ class FileSavingService
     /**
      * @var Filesystem $filesystem
      */
-    public $filesystem;
+    private $filesystem;
 
     /**
      * @var string $basePath
      */
-    public $basePath;
+    private $basePath;
 
 
     /**
@@ -30,15 +30,30 @@ class FileSavingService
         $this->basePath = \AppKernel::getWebDir().'/htmlFiles';
     }
 
+    /**
+     * Save html content to file
+     * @param $filename
+     * @param $content
+     * @return string
+     */
     public function saveContentToFile($filename, $content)
     {
         $folders = $this->createFolders($filename, 0, '', []);
-        $this->filesystem->mkdir($folders);
-        $this->filesystem->dumpFile($folders[count($folders) - 1].'/'.$filename.'.html', $content);
 
+        foreach ($folders as &$folder) {
+            $folder = $this->basePath.$folder;
+        }
+        unset($folder);
+
+        $this->filesystem->mkdir($folders);
+        $pathToHtml = $folders[count($folders) - 1].'/'.$filename.'.html';
+        $this->filesystem->dumpFile($pathToHtml, $content);
+
+        return $pathToHtml;
     }
 
     /**
+     * Recursive create folders up to 7th letter
      * @param string $filename
      * @param integer $i
      * @param string $folderPath
@@ -47,16 +62,13 @@ class FileSavingService
      */
     private function createFolders(string $filename, int $i, string $folderPath, array $folders)
     {
-        if ($i !== strlen($filename) || $i === 5) {
-            $folderPath = '/'.substr($filename, $i, $i + 1);
-            $folders[] = $folderPath;
-            $this->createFolders($filename, $i + 1, $folderPath, $folders);
+        if ($i !== strlen($filename)) {
+            if ($i !== 7) {
+                $folderPath .= '/'.substr($filename, $i, 1);
+                $folders[] = $folderPath;
+                $folders = $this->createFolders($filename, $i + 1, $folderPath, $folders);
+            }
         }
-
-        foreach ($folders as &$folder) {
-            $folder .= $this->basePath.$folder;
-        }
-        unset($folder);
 
         return $folders;
     }

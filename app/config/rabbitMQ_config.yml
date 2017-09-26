@@ -10,24 +10,46 @@ old_sound_rabbit_mq:
     producers:
         request_words:
             connection: default
-            exchange_options: { name: 'dev-pro', type: fanout }
+            exchange_options: { name: 'dev-pro', type: direct }
             queue_options:
                 name: 'request.words'
+                routing_keys:
+                    - 'request'
         parse_html_synonyms:
             connection: default
-            exchange_options: { name: 'dev-pro', type: fanout }
+            exchange_options: { name: 'dev-pro', type: direct }
             queue_options:
                 name: 'parse.html.synonyms'
+                routing_keys:
+                    - 'parse'
     consumers:
         request_words:
             connection: default
-            exchange_options: { name: 'dev-pro', type: fanout }
+            exchange_options: { name: 'dev-pro', type: direct }
             queue_options:
                 name: 'request.words'
+                routing_keys:
+                    - 'request'
             callback: app.consumer.request
         parse_html_synonyms:
             connection: default
-            exchange_options: { name: 'dev-pro', type: fanout }
+            exchange_options: { name: 'dev-pro', type: direct }
             queue_options:
                 name: 'parse.html.synonyms'
+                routing_keys:
+                  - 'parse'
             callback: app.consumer.parse
+
+rabbit_mq_supervisor:
+    paths:
+        workspace_directory: /var/www/devProTestTask/var/supervisor/
+    consumer:
+        individual:
+            request_words:
+                worker:
+                    count: 200 # number of workers per consumer
+            parse_html_synonyms:
+                messages: 10000
+                worker:
+                    count: 15 # number of workers per consumer
+

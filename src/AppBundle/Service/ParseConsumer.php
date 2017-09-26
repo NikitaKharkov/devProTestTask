@@ -2,37 +2,35 @@
 
 namespace AppBundle\Service;
 
-use GuzzleHttp\Client;
+use AppBundle\Document\Synonyms;
+use Psr\Log\LoggerInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\DomCrawler\Crawler;
 
 class ParseConsumer implements ConsumerInterface
 {
     /**
-     * @var Client $client
+     * @var DocumentManager $dm
      */
-    public $client;
+    public $dm;
 
     /**
-     * @var Filesystem $filesystem
+     * @var LoggerInterface $logger
      */
-    public $filesystem;
-
-    /**
-     * @var string $url
-     */
-    public $url;
+    public $logger;
 
     /**
      * ParseConsumer constructor
-     * @param string $url
+     * @param DocumentManager $documentManager
+     * @param LoggerInterface $logger
      */
-    public function __construct(string $url)
+    public function __construct(DocumentManager $documentManager, LoggerInterface $logger)
     {
-        $this->client = new Client();
-        $this->filesystem = new Filesystem();
-        $this->url = $url;
+        $this->dm = $documentManager;
+        $this->dm->getConfiguration()->setLoggerCallable(function () {});
+        $this->logger = $logger;
     }
 
     /**
@@ -40,11 +38,34 @@ class ParseConsumer implements ConsumerInterface
      */
     public function execute(AMQPMessage $msg)
     {
-        $word = json_decode($msg, true)['word'];
+        try {
+            list('key' => $key, 'htmlPath' => $pathToHtml) = json_decode($msg->getBody(), true);
 
-        $html = $this->client->get($this->url.'/'.$word);
+            $crawler = new Crawler(file_get_contents($pathToHtml));
+            $content = $crawler->filter('.content div#article')->html();
 
-        $this->filesystem->dumpFile(\AppKernel::getWebDir().'/data/htmlPages/'.$word, $html);
+            $synonyms = new Synonyms();
+            $synonyms->setSynonyms([$key => $content]);
 
+
+            $this->dm->persist($synonyms);
+            $this->dm->flush();
+            $this->dm->clear();
+        } catch (\Exception $exception) {
+            // I think I should return true also, because I can flush html with error manually instead of trash my logs
+            // In such of task I could do it in this way
+            $info = [
+                'message' => $exception->getMessage(),
+                'line' => $exception->getLine(),
+                'file' => $exception->getFile()
+            ];
+            $context = [
+                'key' => $key,
+                'htmlPath' => $pathToHtml
+            ];
+            $this->logger->error(json_encode($info), $context);
+        }
+
+        return true;
     }
 }

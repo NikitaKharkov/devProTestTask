@@ -2,5 +2,7 @@
 app/config/parameters.yml
 var/cache/
 var/logs/
-var/supervisor
+app/supervisor
 vendor/
+
+web/htmlFiles

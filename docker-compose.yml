@@ -36,8 +36,8 @@ services:
     ports:
       - 15672:15672
     environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_DEFAULT_USER=devPro
+      - RABBITMQ_DEFAULT_PASS=devProPswrd
 
 networks:
   ibe:
